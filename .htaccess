@@ -1,23 +1,51 @@
+# RewriteEngine On
+
+# Header set Access-Control-Allow-Origin "http://localhost:4200"
+# Header set Access-Control-Allow-Methods "GET, PUT , POST, OPTIONS, DELETE"
+# Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-CSRF-Token, X-XSRF-TOKEN"
+
+
+
+# #este codigo quita la extencion .php
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteCond %{REQUEST_FILENAME}.php -f
+# RewriteRule ^(.*)$ $1.php
+
+# #quitala extencion .html
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteCond %{REQUEST_FILENAME}.html -f
+# RewriteRule ^(.*)$ $1.html
+
+# # Si la ruta no es un archivo existente, ni una carpeta
+# # Reescribir al index
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^(.+?)/?$ index.php?url=$1 [L,QSA]
+
+# Para produccion
 RewriteEngine On
 
-Header set Access-Control-Allow-Origin "http://localhost:4200"
-Header set Access-Control-Allow-Methods "GET, PUT , POST, OPTIONS, DELETE"
-Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-CSRF-Token, X-XSRF-TOKEN"
+# CORS para desarrollo y producción
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, PUT, POST, OPTIONS, DELETE"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-CSRF-Token, X-XSRF-TOKEN"
+Header always set Access-Control-Allow-Credentials "true"
 
+# Manejar peticiones OPTIONS (preflight CORS)
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
 
-
-#este codigo quita la extencion .php
+# Quitar extensión .php
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php
+RewriteRule ^(.*)$ $1.php [L]
 
-#quitala extencion .html
+# Quitar extensión .html
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^(.*)$ $1.html
+RewriteRule ^(.*)$ $1.html [L]
 
-# Si la ruta no es un archivo existente, ni una carpeta
-# Reescribir al index
+# Si no es archivo ni carpeta, ir a index
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.+?)/?$ index.php?url=$1 [L,QSA]
